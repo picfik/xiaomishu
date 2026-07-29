@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "exportedAt": "2026-07-29T06:45:47.453Z",
+  "exportedAt": "2026-07-29T06:47:24.371Z",
   "todos": [],
   "habits": [
     {
@@ -56,6 +56,26 @@
       "checkins": {},
       "createdAt": "2026-07-29T06:45:46.938Z",
       "updatedAt": "2026-07-29T06:45:46.938Z"
+    },
+    {
+      "id": "ms5q2kp736pa3",
+      "name": "喝水",
+      "icon": "💧",
+      "reminderEnabled": true,
+      "reminderTime": "09:00",
+      "checkins": {},
+      "createdAt": "2026-07-29T06:47:16.555Z",
+      "updatedAt": "2026-07-29T06:47:16.555Z"
+    },
+    {
+      "id": "ms5q2qcbfxol4",
+      "name": "喝水",
+      "icon": "💧",
+      "reminderEnabled": true,
+      "reminderTime": "10:00",
+      "checkins": {},
+      "createdAt": "2026-07-29T06:47:23.867Z",
+      "updatedAt": "2026-07-29T06:47:23.867Z"
     }
   ],
   "health_records": []
