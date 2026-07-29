@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="theme-color" content="#4F46E5">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>生活小秘书 Pro</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- 顶部 -->
+        <header class="app-header">
+            <h1 id="page-title">待办事项</h1>
+            <div class="header-right">
+                <div class="sync-status" id="sync-status" title="同步状态">
+                    <span class="sync-icon">☁️</span>
+                </div>
+                <button class="header-btn" onclick="switchPage('settings')" title="设置">⚙️</button>
+            </div>
+        </header>
+
+        <!-- 主内容 -->
+        <main class="app-content">
+            <!-- ====== 待办事项 ====== -->
+            <section id="page-todo" class="page active">
+                <div class="add-bar">
+                    <input type="text" id="todo-input" placeholder="添加新任务..." maxlength="100">
+                    <select id="todo-priority">
+                        <option value="normal">普通</option>
+                        <option value="high">紧急</option>
+                        <option value="low">低优</option>
+                    </select>
+                    <button class="btn-add" onclick="Todo.add()">+</button>
+                </div>
+                <!-- 提醒时间设置 -->
+                <div class="reminder-bar">
+                    <label class="reminder-toggle">
+                        <input type="checkbox" id="todo-reminder-enabled" onchange="Todo.toggleReminder()">
+                        <span>设置提醒</span>
+                    </label>
+                    <input type="datetime-local" id="todo-reminder-time" class="reminder-time-input" disabled>
+                </div>
+                <div class="filter-bar">
+                    <button class="filter-btn active" data-filter="all" onclick="Todo.filter('all')">全部</button>
+                    <button class="filter-btn" data-filter="active" onclick="Todo.filter('active')">待完成</button>
+                    <button class="filter-btn" data-filter="done" onclick="Todo.filter('done')">已完成</button>
+                </div>
+                <ul id="todo-list" class="list"></ul>
+                <div class="empty-state" id="todo-empty">
+                    <span class="empty-icon">📋</span>
+                    <p>暂无待办事项</p>
+                </div>
+            </section>
+
+            <!-- ====== 习惯打卡 ====== -->
+            <section id="page-habit" class="page">
+                <div class="add-bar">
+                    <input type="text" id="habit-input" placeholder="添加新习惯..." maxlength="50">
+                    <select id="habit-icon">
+                        <option value="💧">💧 喝水</option>
+                        <option value="🏃">🏃 运动</option>
+                        <option value="📖">📖 阅读</option>
+                        <option value="🧘">🧘 冥想</option>
+                        <option value="😴">😴 早睡</option>
+                        <option value="🥗">🥗 健康饮食</option>
+                        <option value="✍️">✍️ 写字</option>
+                        <option value="🎵">🎵 音乐</option>
+                        <option value="🌟">🌟 自定义</option>
+                    </select>
+                    <button class="btn-add" onclick="Habit.add()">+</button>
+                </div>
+                <div class="reminder-bar">
+                    <label class="reminder-toggle">
+                        <input type="checkbox" id="habit-reminder-enabled" onchange="Habit.toggleReminder()">
+                        <span>每日提醒</span>
+                    </label>
+                    <input type="time" id="habit-reminder-time" class="reminder-time-input" disabled>
+                </div>
+                <div id="habit-list" class="habit-list"></div>
+                <div class="empty-state" id="habit-empty">
+                    <span class="empty-icon">✅</span>
+                    <p>开始培养好习惯吧</p>
+                </div>
+            </section>
+
+            <!-- ====== 设置 ====== -->
+            <section id="page-settings" class="page">
+                <div class="settings-section">
+                    <h3 class="settings-title">🔔 通知权限</h3>
+                    <div class="settings-row">
+                        <span>浏览器通知</span>
+                        <button class="btn-small" id="btn-notif" onclick="Reminder.requestPermission()">授权通知</button>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3 class="settings-title">☁️ GitHub 数据同步</h3>
+                    <div class="settings-row">
+                        <label>同步文件路径</label>
+                        <input type="text" id="github-sync-path" placeholder="data.json" value="data.json">
+                    </div>
+                    <div class="settings-btns">
+                        <button class="btn-primary" onclick="Sync.saveConfig()">保存配置</button>
+                        <button class="btn-secondary" onclick="Sync.upload()">立即上传</button>
+                        <button class="btn-secondary" onclick="Sync.download()">立即拉取</button>
+                    </div>
+                    <div class="settings-row">
+                        <label>自动同步间隔</label>
+                        <select id="sync-interval" onchange="Sync.setInterval()">
+                            <option value="0">关闭</option>
+                            <option value="1">1 分钟</option>
+                            <option value="5" selected>5 分钟</option>
+                            <option value="15">15 分钟</option>
+                            <option value="30">30 分钟</option>
+                        </select>
+                    </div>
+                    <div id="sync-log" class="sync-log"></div>
+                </div>
+
+                <div class="settings-section">
+                    <h3 class="settings-title">🚀 部署到 GitHub</h3>
+                    <div class="settings-row">
+                        <label>GitHub Token</label>
+                        <input type="password" id="github-token" placeholder="ghp_xxxx（需要 repo 权限）">
+                        <p class="settings-hint">前往 GitHub → Settings → Developer settings → Personal access tokens 创建</p>
+                    </div>
+                    <div class="settings-row">
+                        <label>仓库名称</label>
+                        <input type="text" id="github-repo" placeholder="life-pwa-pro" value="life-pwa-pro">
+                    </div>
+                    <div class="settings-row">
+                        <label>是否私有仓库</label>
+                        <select id="github-private">
+                            <option value="false">公开</option>
+                            <option value="true">私有</option>
+                        </select>
+                    </div>
+                    <div class="settings-btns">
+                        <button class="btn-primary" onclick="GitHub.deploy()">🚀 部署到 GitHub Pages</button>
+                    </div>
+                    <div id="deploy-log" class="sync-log"></div>
+                </div>
+
+                <div class="settings-section">
+                    <h3 class="settings-title">📦 数据管理</h3>
+                    <div class="settings-btns">
+                        <button class="btn-secondary" onclick="Data.exportJSON()">📥 导出 JSON</button>
+                        <button class="btn-secondary" onclick="Data.importJSON()">📤 导入 JSON</button>
+                        <button class="btn-danger" onclick="Data.clearAll()">🗑️ 清空所有数据</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- 底部导航 -->
+        <nav class="bottom-nav">
+            <button class="nav-btn active" data-page="todo" onclick="switchPage('todo')">
+                <span class="nav-icon">📋</span>
+                <span class="nav-label">待办</span>
+            </button>
+            <button class="nav-btn" data-page="habit" onclick="switchPage('habit')">
+                <span class="nav-icon">✅</span>
+                <span class="nav-label">习惯</span>
+            </button>
+            <button class="nav-btn" data-page="settings" onclick="switchPage('settings')">
+                <span class="nav-icon">⚙️</span>
+                <span class="nav-label">设置</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast"></div>
+    <!-- 隐藏的文件输入 -->
+    <input type="file" id="file-import" accept=".json" style="display:none" onchange="Data.handleImport(event)">
+
+    <script src="sync.js"></script>
+    <script src="reminder.js"></script>
+    <script src="github.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
