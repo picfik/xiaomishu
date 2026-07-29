@@ -1,28 +1,7 @@
 {
   "version": 2,
-  "exportedAt": "2026-07-29T06:44:00.132Z",
-  "todos": [
-    {
-      "id": "ms5pycr3zrcy6",
-      "text": "Tyy",
-      "priority": "normal",
-      "done": false,
-      "reminderEnabled": false,
-      "reminderTime": null,
-      "createdAt": "2026-07-29T06:43:59.631Z",
-      "updatedAt": "2026-07-29T06:43:59.631Z"
-    },
-    {
-      "id": "ms5njjl4jjoro",
-      "text": "是的",
-      "priority": "normal",
-      "done": false,
-      "reminderEnabled": true,
-      "reminderTime": "2026-07-29T06:36:00.000Z",
-      "createdAt": "2026-07-29T05:36:29.416Z",
-      "updatedAt": "2026-07-29T05:36:29.416Z"
-    }
-  ],
+  "exportedAt": "2026-07-29T06:44:49.836Z",
+  "todos": [],
   "habits": [
     {
       "id": "ms5iwgop7owjx",
