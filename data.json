@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "exportedAt": "2026-07-29T06:56:34.271Z",
+  "exportedAt": "2026-07-29T07:01:59.448Z",
   "todos": [
     {
       "id": "ms5qein9z5f4b",
@@ -54,9 +54,11 @@
       "icon": "🏃",
       "reminderEnabled": true,
       "reminderTime": "21:45",
-      "checkins": {},
+      "checkins": {
+        "2026-07-28": true
+      },
       "createdAt": "2026-07-29T06:45:28.354Z",
-      "updatedAt": "2026-07-29T06:45:28.354Z"
+      "updatedAt": "2026-07-29T07:01:58.940Z"
     },
     {
       "id": "ms5q0njup82wk",
@@ -157,6 +159,26 @@
       "checkins": {},
       "createdAt": "2026-07-29T06:48:23.209Z",
       "updatedAt": "2026-07-29T06:48:23.209Z"
+    },
+    {
+      "id": "ms5q448z7upl3",
+      "name": "喝水",
+      "icon": "💧",
+      "reminderEnabled": true,
+      "reminderTime": "21:00",
+      "checkins": {},
+      "createdAt": "2026-07-29T06:48:28.547Z",
+      "updatedAt": "2026-07-29T06:48:28.547Z"
+    },
+    {
+      "id": "ms5q48sji74tr",
+      "name": "喝水",
+      "icon": "💧",
+      "reminderEnabled": true,
+      "reminderTime": "22:00",
+      "checkins": {},
+      "createdAt": "2026-07-29T06:48:34.435Z",
+      "updatedAt": "2026-07-29T06:48:34.435Z"
     }
   ],
   "health_records": []
