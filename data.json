@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "exportedAt": "2026-07-29T06:47:24.371Z",
+  "exportedAt": "2026-07-29T06:48:23.720Z",
   "todos": [],
   "habits": [
     {
@@ -76,6 +76,76 @@
       "checkins": {},
       "createdAt": "2026-07-29T06:47:23.867Z",
       "updatedAt": "2026-07-29T06:47:23.867Z"
+    },
+    {
+      "id": "ms5q31feh0m5b",
+      "name": "喝水",
+      "icon": "💧",
+      "reminderEnabled": true,
+      "reminderTime": "11:00",
+      "checkins": {},
+      "createdAt": "2026-07-29T06:47:38.234Z",
+      "updatedAt": "2026-07-29T06:47:38.234Z"
+    },
+    {
+      "id": "ms5q3a3m9v7b9",
+      "name": "喝水",
+      "icon": "💧",
+      "reminderEnabled": true,
+      "reminderTime": "13:00",
+      "checkins": {},
+      "createdAt": "2026-07-29T06:47:49.474Z",
+      "updatedAt": "2026-07-29T06:47:49.474Z"
+    },
+    {
+      "id": "ms5q3ec2kazc6",
+      "name": "喝水",
+      "icon": "💧",
+      "reminderEnabled": true,
+      "reminderTime": "14:00",
+      "checkins": {},
+      "createdAt": "2026-07-29T06:47:54.962Z",
+      "updatedAt": "2026-07-29T06:47:54.962Z"
+    },
+    {
+      "id": "ms5q3ir7hum3g",
+      "name": "喝水",
+      "icon": "💧",
+      "reminderEnabled": true,
+      "reminderTime": "15:00",
+      "checkins": {},
+      "createdAt": "2026-07-29T06:48:00.691Z",
+      "updatedAt": "2026-07-29T06:48:00.691Z"
+    },
+    {
+      "id": "ms5q3n0qjvvut",
+      "name": "喝水",
+      "icon": "💧",
+      "reminderEnabled": true,
+      "reminderTime": "16:00",
+      "checkins": {},
+      "createdAt": "2026-07-29T06:48:06.218Z",
+      "updatedAt": "2026-07-29T06:48:06.218Z"
+    },
+    {
+      "id": "ms5q3vabfgrlj",
+      "name": "喝水",
+      "icon": "💧",
+      "reminderEnabled": true,
+      "reminderTime": "19:00",
+      "checkins": {},
+      "createdAt": "2026-07-29T06:48:16.931Z",
+      "updatedAt": "2026-07-29T06:48:16.931Z"
+    },
+    {
+      "id": "ms5q404p7j9h0",
+      "name": "喝水",
+      "icon": "💧",
+      "reminderEnabled": true,
+      "reminderTime": "20:00",
+      "checkins": {},
+      "createdAt": "2026-07-29T06:48:23.209Z",
+      "updatedAt": "2026-07-29T06:48:23.209Z"
     }
   ],
   "health_records": []
