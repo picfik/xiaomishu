@@ -38,7 +38,7 @@ function loadData(key, def) {
 function saveData(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
 
 // ---- 页面切换 ----
-const pageTitles = { todo: '待办事项', habit: '习惯打卡', settings: '设置' };
+const pageTitles = { todo: '待办事项', habit: '习惯打卡', health: '健康监控', settings: '设置' };
 function switchPage(page) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     const el = document.getElementById('page-' + page);
@@ -47,6 +47,7 @@ function switchPage(page) {
     const nav = document.querySelector(`.nav-btn[data-page="${page}"]`);
     if (nav) nav.classList.add('active');
     document.getElementById('page-title').textContent = pageTitles[page] || page;
+    if (page === 'health') Health.render();
 }
 
 // ---- 日期显示 ----
@@ -346,6 +347,335 @@ const Habit = (() => {
 })();
 
 // ============================
+// 健康监控模块
+// ============================
+const Health = (() => {
+    let records = loadData('health_records', []);
+
+    function save() { saveData('health_records', records); }
+    function today() { return formatDate(new Date()); }
+
+    function getTodayRecord() {
+        return records.find(r => r.date === today());
+    }
+
+    function getLast7Days() {
+        const days = [];
+        for (let i = 6; i >= 0; i--) {
+            const d = new Date();
+            d.setDate(d.getDate() - i);
+            days.push(formatDate(d));
+        }
+        return days;
+    }
+
+    function getWaterFromHabits() {
+        const habits = loadData('habits', []);
+        const todayStr = today();
+        let count = 0;
+        habits.forEach(h => {
+            const isWater = (h.name && h.name.includes('喝水')) || h.icon === '💧';
+            if (isWater && h.checkins && h.checkins[todayStr]) {
+                count++;
+            }
+        });
+        return count;
+    }
+
+    function saveRecord() {
+        const systolic = parseFloat(document.getElementById('health-systolic').value);
+        const diastolic = parseFloat(document.getElementById('health-diastolic').value);
+        const heartRate = parseFloat(document.getElementById('health-heartrate').value);
+        const weight = parseFloat(document.getElementById('health-weight').value);
+        const waist = parseFloat(document.getElementById('health-waist').value);
+        const waterIntake = parseFloat(document.getElementById('health-water').value);
+
+        if (isNaN(systolic) && isNaN(diastolic) && isNaN(heartRate) && isNaN(weight) && isNaN(waist) && isNaN(waterIntake)) {
+            showToast('请至少填写一项数据');
+            return;
+        }
+
+        const todayStr = today();
+        const existing = records.findIndex(r => r.date === todayStr);
+
+        const record = {
+            id: existing >= 0 ? records[existing].id : generateId(),
+            date: todayStr,
+            systolic: isNaN(systolic) ? null : systolic,
+            diastolic: isNaN(diastolic) ? null : diastolic,
+            heartRate: isNaN(heartRate) ? null : heartRate,
+            weight: isNaN(weight) ? null : weight,
+            waist: isNaN(waist) ? null : waist,
+            waterIntake: isNaN(waterIntake) ? null : waterIntake,
+            createdAt: existing >= 0 ? records[existing].createdAt : new Date().toISOString()
+        };
+
+        if (existing >= 0) {
+            records[existing] = record;
+        } else {
+            records.push(record);
+        }
+        save();
+        render();
+        showToast('✅ 健康数据已保存');
+    }
+
+    function renderTodayCard() {
+        const card = document.getElementById('health-today-card');
+        const valuesEl = document.getElementById('health-today-values');
+        const hintEl = document.getElementById('health-habit-hint');
+        const rec = getTodayRecord();
+
+        if (!rec) {
+            card.style.display = 'none';
+            return;
+        }
+        card.style.display = 'block';
+
+        const items = [];
+        if (rec.systolic != null || rec.diastolic != null) {
+            items.push('<span class="health-tag">🩸 血压 ' + (rec.systolic ?? '-') + '/' + (rec.diastolic ?? '-') + ' mmHg</span>');
+        }
+        if (rec.heartRate != null) items.push('<span class="health-tag">💓 心率 ' + rec.heartRate + ' 次/分</span>');
+        if (rec.weight != null) items.push('<span class="health-tag">⚖️ 体重 ' + rec.weight + ' kg</span>');
+        if (rec.waist != null) items.push('<span class="health-tag">📏 腰围 ' + rec.waist + ' cm</span>');
+        if (rec.waterIntake != null) items.push('<span class="health-tag">💧 喝水 ' + rec.waterIntake + ' ml</span>');
+        valuesEl.innerHTML = items.join('');
+
+        const habitCount = getWaterFromHabits();
+        if (habitCount > 0) {
+            hintEl.style.display = 'block';
+            hintEl.innerHTML = '💧 喝水习惯打卡: +' + habitCount + '次（约' + (habitCount * 250) + 'ml）';
+        } else {
+            hintEl.style.display = 'none';
+        }
+    }
+
+    function renderCharts() {
+        const container = document.getElementById('health-charts');
+        const days = getLast7Days();
+        const dayRecords = days.map(d => records.find(r => r.date === d) || null);
+
+        const charts = [
+            {
+                title: '🩸 血压趋势',
+                lines: [
+                    { key: 'systolic', label: '收缩压', color: '#EF4444' },
+                    { key: 'diastolic', label: '舒张压', color: '#3B82F6' }
+                ],
+                unit: 'mmHg'
+            },
+            { title: '💓 心率趋势', lines: [{ key: 'heartRate', label: '心率', color: '#EC4899' }], unit: '次/分' },
+            { title: '⚖️ 体重趋势', lines: [{ key: 'weight', label: '体重', color: '#8B5CF6' }], unit: 'kg' },
+            { title: '📏 腰围趋势', lines: [{ key: 'waist', label: '腰围', color: '#F59E0B' }], unit: 'cm' },
+            { title: '💧 喝水量趋势', lines: [{ key: 'waterIntake', label: '喝水量', color: '#06B6D4' }], unit: 'ml' }
+        ];
+
+        container.innerHTML = charts.map((c, ci) => {
+            const canvasId = 'health-chart-' + ci;
+            const statId = 'health-stat-' + ci;
+            return '<div class="health-chart-card">' +
+                '<h4 class="health-chart-title">' + c.title + '</h4>' +
+                '<canvas id="' + canvasId + '" class="health-canvas"></canvas>' +
+                '<div id="' + statId + '" class="health-chart-stat"></div>' +
+                '</div>';
+        }).join('');
+
+        charts.forEach((c, ci) => {
+            drawChart(c, days, dayRecords, ci);
+        });
+    }
+
+    function drawChart(chartConfig, days, dayRecords, idx) {
+        const canvas = document.getElementById('health-chart-' + idx);
+        if (!canvas) return;
+        const dpr = window.devicePixelRatio || 1;
+        const parentEl = canvas.parentElement;
+        const W = parentEl.clientWidth - 32;
+        const H = 180;
+        canvas.width = W * dpr;
+        canvas.height = H * dpr;
+        canvas.style.width = W + 'px';
+        canvas.style.height = H + 'px';
+        const ctx = canvas.getContext('2d');
+        ctx.scale(dpr, dpr);
+
+        const padL = 44, padR = 16, padT = 16, padB = 36;
+        const plotW = W - padL - padR;
+        const plotH = H - padT - padB;
+
+        let allVals = [];
+        chartConfig.lines.forEach(line => {
+            dayRecords.forEach(r => {
+                if (r && r[line.key] != null) allVals.push(r[line.key]);
+            });
+        });
+
+        if (allVals.length === 0) {
+            ctx.fillStyle = '#9CA3AF';
+            ctx.font = '13px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('暂无数据', W / 2, H / 2);
+            document.getElementById('health-stat-' + idx).innerHTML = '';
+            return;
+        }
+
+        let yMin = Math.min(...allVals);
+        let yMax = Math.max(...allVals);
+        if (yMin === yMax) { yMin -= 5; yMax += 5; }
+        const yRange = yMax - yMin;
+        yMin -= yRange * 0.1;
+        yMax += yRange * 0.1;
+
+        // Grid lines
+        ctx.strokeStyle = '#E5E7EB';
+        ctx.lineWidth = 0.5;
+        const gridLines = 4;
+        for (let i = 0; i <= gridLines; i++) {
+            const y = padT + (plotH / gridLines) * i;
+            ctx.beginPath();
+            ctx.moveTo(padL, y);
+            ctx.lineTo(W - padR, y);
+            ctx.stroke();
+
+            const val = yMax - ((yMax - yMin) / gridLines) * i;
+            ctx.fillStyle = '#9CA3AF';
+            ctx.font = '10px sans-serif';
+            ctx.textAlign = 'right';
+            ctx.fillText(val.toFixed(val >= 100 ? 0 : 1), padL - 6, y + 3);
+        }
+
+        // X labels
+        ctx.fillStyle = '#9CA3AF';
+        ctx.font = '10px sans-serif';
+        ctx.textAlign = 'center';
+        days.forEach((d, i) => {
+            const x = padL + (plotW / (days.length - 1)) * i;
+            const label = d.slice(5).replace('-', '/');
+            ctx.fillText(label, x, H - padB + 16);
+        });
+
+        const dataPoints = [];
+
+        chartConfig.lines.forEach(line => {
+            const points = [];
+            dayRecords.forEach((r, i) => {
+                if (r && r[line.key] != null) {
+                    const x = padL + (plotW / (days.length - 1)) * i;
+                    const y = padT + plotH - ((r[line.key] - yMin) / (yMax - yMin)) * plotH;
+                    points.push({ x, y, val: r[line.key], label: line.label });
+                    dataPoints.push({ x, y, val: r[line.key], label: line.label, color: line.color });
+                }
+            });
+
+            if (points.length > 1) {
+                ctx.beginPath();
+                ctx.strokeStyle = line.color;
+                ctx.lineWidth = 2;
+                ctx.lineJoin = 'round';
+                ctx.lineCap = 'round';
+                points.forEach((p, i) => { i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y); });
+                ctx.stroke();
+
+                // Area fill
+                ctx.beginPath();
+                points.forEach((p, i) => { i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y); });
+                ctx.lineTo(points[points.length - 1].x, padT + plotH);
+                ctx.lineTo(points[0].x, padT + plotH);
+                ctx.closePath();
+                ctx.fillStyle = line.color + '18';
+                ctx.fill();
+            }
+
+            // Dots
+            points.forEach(p => {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fill();
+                ctx.strokeStyle = line.color;
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            });
+        });
+
+        // Tooltip on touch/click
+        let tooltipDiv = document.getElementById('health-tooltip');
+        if (!tooltipDiv) {
+            tooltipDiv = document.createElement('div');
+            tooltipDiv.id = 'health-tooltip';
+            tooltipDiv.className = 'health-tooltip';
+            document.body.appendChild(tooltipDiv);
+        }
+
+        function showTooltip(e) {
+            e.preventDefault();
+            const cr = canvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            const mx = clientX - cr.left;
+            let closest = null, minDist = Infinity;
+            dataPoints.forEach(p => {
+                const dist = Math.abs(p.x - mx);
+                if (dist < minDist) { minDist = dist; closest = p; }
+            });
+            if (closest && minDist < 30) {
+                tooltipDiv.textContent = closest.label + ': ' + closest.val + ' ' + chartConfig.unit;
+                tooltipDiv.style.display = 'block';
+                tooltipDiv.style.left = (clientX - 40) + 'px';
+                tooltipDiv.style.top = (clientY - 36) + 'px';
+            } else {
+                tooltipDiv.style.display = 'none';
+            }
+        }
+
+        canvas.onmousemove = showTooltip;
+        canvas.ontouchstart = showTooltip;
+        canvas.onmouseleave = function() { tooltipDiv.style.display = 'none'; };
+
+        // Stats
+        const statEl = document.getElementById('health-stat-' + idx);
+        let statsHtml = '';
+        chartConfig.lines.forEach(line => {
+            const vals = dayRecords.filter(r => r && r[line.key] != null).map(r => r[line.key]);
+            if (vals.length === 0) return;
+            const avg = (vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(1);
+            const max = Math.max(...vals);
+            const min = Math.min(...vals);
+            const todayRec = dayRecords[dayRecords.length - 1];
+            const todayVal = (todayRec && todayRec[line.key] != null) ? todayRec[line.key] : '-';
+            statsHtml += '<div class="health-stat-row">' +
+                '<span style="color:' + line.color + '">● ' + line.label + '</span>' +
+                '<span>今日: ' + todayVal + '</span>' +
+                '<span>均值: ' + avg + '</span>' +
+                '<span>最高: ' + max + '</span>' +
+                '<span>最低: ' + min + '</span>' +
+                '</div>';
+        });
+        statEl.innerHTML = statsHtml;
+    }
+
+    function render() {
+        records = loadData('health_records', []);
+        renderTodayCard();
+        renderCharts();
+        const rec = getTodayRecord();
+        if (rec) {
+            if (rec.systolic != null) document.getElementById('health-systolic').value = rec.systolic;
+            if (rec.diastolic != null) document.getElementById('health-diastolic').value = rec.diastolic;
+            if (rec.heartRate != null) document.getElementById('health-heartrate').value = rec.heartRate;
+            if (rec.weight != null) document.getElementById('health-weight').value = rec.weight;
+            if (rec.waist != null) document.getElementById('health-waist').value = rec.waist;
+            if (rec.waterIntake != null) document.getElementById('health-water').value = rec.waterIntake;
+        }
+    }
+
+    function refresh() { records = loadData('health_records', []); }
+
+    return { saveRecord, render, refresh };
+})();
+
+// ============================
 // 数据管理
 // ============================
 const Data = (() => {
@@ -354,7 +684,8 @@ const Data = (() => {
             version: 1,
             exportedAt: new Date().toISOString(),
             todos: loadData('todos', []),
-            habits: loadData('habits', [])
+            habits: loadData('habits', []),
+            health_records: loadData('health_records', [])
         };
         const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
@@ -381,8 +712,10 @@ const Data = (() => {
                 if (!data.version) throw new Error('格式无效');
                 if (data.todos) saveData('todos', data.todos);
                 if (data.habits) saveData('habits', data.habits);
+                if (data.health_records) saveData('health_records', data.health_records);
                 Todo.refresh();
                 Habit.refresh();
+                Health.refresh();
                 showToast('数据已导入');
             } catch(err) {
                 showToast('导入失败: ' + err.message);
@@ -396,8 +729,10 @@ const Data = (() => {
         if (!confirm('确定清空所有数据？此操作不可撤销。')) return;
         localStorage.removeItem('todos');
         localStorage.removeItem('habits');
+        localStorage.removeItem('health_records');
         Todo.refresh();
         Habit.refresh();
+        Health.refresh();
         showToast('数据已清空');
     }
 
@@ -411,6 +746,7 @@ function init() {
     updateDate();
     Todo.render();
     Habit.render();
+    Health.render();
     Reminder.init();
     Reminder.updateNotifButton();
     Sync.init();
