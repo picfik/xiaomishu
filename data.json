@@ -1,18 +1,7 @@
 {
   "version": 2,
-  "exportedAt": "2026-07-29T07:01:59.448Z",
-  "todos": [
-    {
-      "id": "ms5qein9z5f4b",
-      "text": "Tyhhhhh",
-      "priority": "normal",
-      "done": false,
-      "reminderEnabled": true,
-      "reminderTime": "2026-07-29T07:56:00.000Z",
-      "createdAt": "2026-07-29T06:56:33.766Z",
-      "updatedAt": "2026-07-29T06:56:33.766Z"
-    }
-  ],
+  "exportedAt": "2026-07-29T07:11:03.172Z",
+  "todos": [],
   "habits": [
     {
       "id": "ms5iwgop7owjx",
@@ -54,11 +43,9 @@
       "icon": "🏃",
       "reminderEnabled": true,
       "reminderTime": "21:45",
-      "checkins": {
-        "2026-07-28": true
-      },
+      "checkins": {},
       "createdAt": "2026-07-29T06:45:28.354Z",
-      "updatedAt": "2026-07-29T07:01:58.940Z"
+      "updatedAt": "2026-07-29T06:45:28.354Z"
     },
     {
       "id": "ms5q0njup82wk",
@@ -159,26 +146,6 @@
       "checkins": {},
       "createdAt": "2026-07-29T06:48:23.209Z",
       "updatedAt": "2026-07-29T06:48:23.209Z"
-    },
-    {
-      "id": "ms5q448z7upl3",
-      "name": "喝水",
-      "icon": "💧",
-      "reminderEnabled": true,
-      "reminderTime": "21:00",
-      "checkins": {},
-      "createdAt": "2026-07-29T06:48:28.547Z",
-      "updatedAt": "2026-07-29T06:48:28.547Z"
-    },
-    {
-      "id": "ms5q48sji74tr",
-      "name": "喝水",
-      "icon": "💧",
-      "reminderEnabled": true,
-      "reminderTime": "22:00",
-      "checkins": {},
-      "createdAt": "2026-07-29T06:48:34.435Z",
-      "updatedAt": "2026-07-29T06:48:34.435Z"
     }
   ],
   "health_records": []
