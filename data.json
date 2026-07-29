@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "exportedAt": "2026-07-29T06:44:49.836Z",
+  "exportedAt": "2026-07-29T06:45:47.453Z",
   "todos": [],
   "habits": [
     {
@@ -36,6 +36,26 @@
       "checkins": {},
       "createdAt": "2026-07-29T03:27:32.393Z",
       "updatedAt": "2026-07-29T03:27:32.393Z"
+    },
+    {
+      "id": "ms5q097m8j1yj",
+      "name": "哑铃",
+      "icon": "🏃",
+      "reminderEnabled": true,
+      "reminderTime": "21:45",
+      "checkins": {},
+      "createdAt": "2026-07-29T06:45:28.354Z",
+      "updatedAt": "2026-07-29T06:45:28.354Z"
+    },
+    {
+      "id": "ms5q0njup82wk",
+      "name": "吃药",
+      "icon": "🌟",
+      "reminderEnabled": true,
+      "reminderTime": "12:30",
+      "checkins": {},
+      "createdAt": "2026-07-29T06:45:46.938Z",
+      "updatedAt": "2026-07-29T06:45:46.938Z"
     }
   ],
   "health_records": []
