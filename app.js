@@ -65,7 +65,7 @@ const Todo = (() => {
     let items = loadData('todos', []);
     let filter = 'all';
 
-    function save() { saveData('todos', items); }
+    function save() { saveData('todos', items); if (typeof Sync !== 'undefined' && Sync.autoUploadOnChange) setTimeout(() => Sync.autoUploadOnChange(), 500); }
 
     function add() {
         const input = document.getElementById('todo-input');
@@ -193,7 +193,7 @@ const Todo = (() => {
 const Habit = (() => {
     let items = loadData('habits', []);
 
-    function save() { saveData('habits', items); }
+    function save() { saveData('habits', items); if (typeof Sync !== 'undefined' && Sync.autoUploadOnChange) setTimeout(() => Sync.autoUploadOnChange(), 500); }
 
     function add() {
         const input = document.getElementById('habit-input');
