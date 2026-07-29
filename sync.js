@@ -263,10 +263,11 @@ const Sync = (() => {
     // ---- 数据导入导出 ----
     function exportData() {
         return {
-            version: 1,
+            version: 2,
             exportedAt: new Date().toISOString(),
             todos: JSON.parse(localStorage.getItem('todos') || '[]'),
-            habits: JSON.parse(localStorage.getItem('habits') || '[]')
+            habits: JSON.parse(localStorage.getItem('habits') || '[]'),
+            health_records: JSON.parse(localStorage.getItem('health_records') || '[]')
         };
     }
 
@@ -278,15 +279,19 @@ const Sync = (() => {
 
         const localTodos = JSON.parse(localStorage.getItem('todos') || '[]');
         const localHabits = JSON.parse(localStorage.getItem('habits') || '[]');
+        const localHealth = JSON.parse(localStorage.getItem('health_records') || '[]');
 
         const mergedTodos = mergeById(localTodos, data.todos || []);
         const mergedHabits = mergeById(localHabits, data.habits || []);
+        const mergedHealth = mergeById(localHealth, data.health_records || []);
 
         localStorage.setItem('todos', JSON.stringify(mergedTodos));
         localStorage.setItem('habits', JSON.stringify(mergedHabits));
+        localStorage.setItem('health_records', JSON.stringify(mergedHealth));
 
         if (typeof Todo !== 'undefined' && Todo.render) Todo.render();
         if (typeof Habit !== 'undefined' && Habit.render) Habit.render();
+        if (typeof Health !== 'undefined' && Health.render) Health.render();
     }
 
     function mergeById(local, remote) {
