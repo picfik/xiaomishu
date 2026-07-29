@@ -6,7 +6,7 @@ const GitHub = (() => {
     const API = 'https://api.github.com';
 
     function getToken() { return document.getElementById('github-token').value.trim(); }
-    function getRepoName() { return document.getElementById('github-repo').value.trim() || 'life-pwa-pro'; }
+    function getRepoName() { return document.getElementById('github-repo').value.trim() || 'xiaomishu'; }
     function isPrivate() { return document.getElementById('github-private').value === 'true'; }
 
     function headers(token) {
