@@ -90,6 +90,52 @@
                 </div>
             </section>
 
+            <!-- ====== 健康监控 ====== -->
+            <section id="page-health" class="page">
+                <div class="health-form-card">
+                    <h3 class="health-form-title">📝 今日记录</h3>
+                    <div class="health-form">
+                        <div class="health-input-row">
+                            <label>收缩压</label>
+                            <input type="number" id="health-systolic" placeholder="120" min="60" max="260">
+                            <span class="health-unit">mmHg</span>
+                        </div>
+                        <div class="health-input-row">
+                            <label>舒张压</label>
+                            <input type="number" id="health-diastolic" placeholder="80" min="30" max="160">
+                            <span class="health-unit">mmHg</span>
+                        </div>
+                        <div class="health-input-row">
+                            <label>心率</label>
+                            <input type="number" id="health-heartrate" placeholder="72" min="30" max="220">
+                            <span class="health-unit">次/分</span>
+                        </div>
+                        <div class="health-input-row">
+                            <label>体重</label>
+                            <input type="number" id="health-weight" placeholder="65.5" step="0.1" min="20" max="300">
+                            <span class="health-unit">kg</span>
+                        </div>
+                        <div class="health-input-row">
+                            <label>腰围</label>
+                            <input type="number" id="health-waist" placeholder="80" min="30" max="200">
+                            <span class="health-unit">cm</span>
+                        </div>
+                        <div class="health-input-row">
+                            <label>喝水量</label>
+                            <input type="number" id="health-water" placeholder="1500" min="0" max="10000">
+                            <span class="health-unit">ml</span>
+                        </div>
+                        <button class="health-save-btn" onclick="Health.saveRecord()">💾 保存今日记录</button>
+                    </div>
+                </div>
+                <div id="health-today-card" class="health-today-card" style="display:none">
+                    <h3 class="health-form-title">📊 今日数据</h3>
+                    <div id="health-today-values" class="health-today-values"></div>
+                    <div id="health-habit-hint" class="health-habit-hint" style="display:none"></div>
+                </div>
+                <div id="health-charts" class="health-charts"></div>
+            </section>
+
             <!-- ====== 设置 ====== -->
             <section id="page-settings" class="page">
                 <div class="settings-section">
@@ -168,6 +214,10 @@
             <button class="nav-btn" data-page="habit" onclick="switchPage('habit')">
                 <span class="nav-icon">✅</span>
                 <span class="nav-label">习惯</span>
+            </button>
+            <button class="nav-btn" data-page="health" onclick="switchPage('health')">
+                <span class="nav-icon">❤️</span>
+                <span class="nav-label">健康</span>
             </button>
             <button class="nav-btn" data-page="settings" onclick="switchPage('settings')">
                 <span class="nav-icon">⚙️</span>
